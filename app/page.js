@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import { AnimatePresence, motion, useScroll, useSpring, useTransform } from 'framer-motion';
+import { AnimatePresence, motion, useScroll, useTransform } from 'framer-motion';
 import { D } from './data';
 
 const ease = [0.22, 1, 0.36, 1];
@@ -9,13 +9,11 @@ const ease = [0.22, 1, 0.36, 1];
 function Side({ from = 'left', children, className = '' }) {
   const ref = useRef(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ['start 100%', 'start 62%'] });
-  const p = useSpring(scrollYProgress, { stiffness: 80, damping: 24, mass: 0.7 });
-  const x = useTransform(p, [0, 1], [from === 'left' ? -170 : from === 'right' ? 170 : 0, 0]);
-  const y = useTransform(p, [0, 1], [from === 'up' ? 60 : 0, 0]);
-  const opacity = useTransform(p, [0, 0.8], [0, 1]);
-  return <motion.div ref={ref} className={className} style={{ x, y, opacity }}>{children}</motion.div>;
+  const x = useTransform(scrollYProgress, [0, 1], [from === 'left' ? -170 : from === 'right' ? 170 : 0, 0]);
+  const y = useTransform(scrollYProgress, [0, 1], [from === 'up' ? 60 : 0, 0]);
+  const opacity = useTransform(scrollYProgress, [0, 0.8], [0, 1]);
+  return <motion.div ref={ref} className={className} style={{ x, y, opacity, willChange: 'transform, opacity' }}>{children}</motion.div>;
 }
-
 /* Botanical line art (wild grass + flowers) */
 function Sprig({ x, h, lean, bloom }) {
   const P = (t) => [x + lean * t * t, 400 - h * (1.2 * t - 0.2 * t * t)];
@@ -95,17 +93,22 @@ function Envelope({ onOpen, startOpen }) {
     return () => timers.current.forEach(clearTimeout);
   }, []);
 
-  const open = () => {
-    if (busy.current) return;
-    busy.current = true;
-    run([
-      [0, () => set({ seal: 1 })],     // seal spins and breaks
-      [1000, () => set({ flap: 1 })],  // flap opens
-      [2200, () => set({ inn: 1 })],   // card slides out
-      [3400, () => { setLift(true); set({ full: 1 }); }],
-      [4500, onOpen],
-    ]);
-  };
+ const open = () => {
+  if (busy.current) return;
+  busy.current = true;
+  try { // go full screen on tap (hides the URL bar)
+    const el = document.documentElement;
+    const f = el.requestFullscreen || el.webkitRequestFullscreen;
+    if (f) { const r = f.call(el); if (r && r.catch) r.catch(() => {}); }
+  } catch (e) {}
+  run([
+    [0, () => set({ seal: 1 })],
+    [1000, () => set({ flap: 1 })],
+    [2200, () => set({ inn: 1 })],
+    [3400, () => { setLift(true); set({ full: 1 }); }],
+    [4500, onOpen],
+  ]);
+};
 
   const L = s.full
     ? { left: '0%', top: '0%', width: '100%', height: '100%', y: '0%', borderRadius: 0 }

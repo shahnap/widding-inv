@@ -1,15 +1,15 @@
-import { Cormorant_Garamond, Great_Vibes, Jost } from 'next/font/google';
+import { EB_Garamond, Allura, Cinzel } from 'next/font/google';
 import './globals.css';
 
-const serif = Cormorant_Garamond({ subsets: ['latin'], weight: ['400', '500', '600'], variable: '--serif' });
-const script = Great_Vibes({ subsets: ['latin'], weight: '400', variable: '--script' });
-const sans = Jost({ subsets: ['latin'], weight: ['300', '400', '500'], variable: '--sans' });
+const serif = EB_Garamond({ subsets: ['latin'], weight: ['400', '500', '600'], style: ['normal', 'italic'], variable: '--serif' });
+const script = Allura({ subsets: ['latin'], weight: '400', variable: '--script' });
+const sans = Cinzel({ subsets: ['latin'], weight: ['400', '600', '700'], variable: '--sans' });
 
 export const metadata = {
   title: 'Akhil & Smrithi | Wedding Reception',
   description: 'You are warmly invited to the wedding reception of Akhil and Smrithi.',
 };
-export const viewport = { width: 'device-width', initialScale: 1, themeColor: '#a9b79a' };
+export const viewport = { width: 'device-width', initialScale: 1, themeColor: '#fbfaf7' };
 
 export default function RootLayout({ children }) {
   return (
