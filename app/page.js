@@ -232,9 +232,10 @@ export default function Page() {
     <Side from="up">
       <h3 className="venue">{D.venue}</h3>
       <p className="fam">{D.address}</p>
-      <div className="btns">
-        <a href={D.mapsUrl} target="_blank" rel="noreferrer">Open in Maps</a>
-      </div>
+    <div className="btns">
+  <a href={D.mapsUrl} target="_blank" rel="noreferrer">Open in Maps</a>
+  <a href={D.calendarUrl} target="_blank" rel="noreferrer" className="ghost">Add to Calendar</a>
+</div>
     </Side>
   </section>
 
